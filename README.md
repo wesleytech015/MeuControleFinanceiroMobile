@@ -3,13 +3,13 @@ Aplicativo de controle financeiro pessoal desenvolvido em React Native, integrad
 
 ## Objetivo e equipe
 
-Projeto acadêmico de Wesley, Marcus, Eliezer e Davi. A base mobile utiliza Expo SDK 58, React Native e TypeScript. O backend Node.js/Express e MySQL da versão Web será reaproveitado futuramente; esta etapa contém somente navegação e telas placeholder, sem autenticação, API ou regras de negócio.
+Projeto acadêmico de Wesley, Marcus, Eliezer e Davi. A base mobile utiliza Expo SDK 57, React Native e TypeScript. O backend Node.js/Express e MySQL da versão Web será reaproveitado futuramente; esta etapa contém somente navegação e telas placeholder, sem autenticação, API ou regras de negócio.
 
 ## Pré-requisitos
 
 - Node.js 24 LTS (24.3 ou superior, dentro da versão 24; veja `.nvmrc`) e npm.
 - Git e VS Code.
-- Para Android: dispositivo com Expo Go compatível com o SDK 58 ou emulador configurado no Android Studio. Caso o Expo Go disponível não suporte o SDK, será necessário um development build compatível.
+- Para Android: celular com Expo Go compatível com o SDK 57. Para testar pelo QR code, mantenha o celular e o computador na mesma rede. Android Studio, JDK e compilação nativa não são necessários nesse fluxo.
 - iOS exige dispositivo compatível ou macOS com simulador para execução nativa local.
 
 ## Instalação e execução
@@ -19,11 +19,11 @@ git clone https://github.com/wesleytech015/MeuControleFinanceiroMobile.git
 cd MeuControleFinanceiroMobile
 git switch develop
 npm ci
-npm start
+npx expo start --go --clear
 ```
 
 Enquanto o PR da base não estiver integrado, use `git switch feature/base-mobile` após o clone.
-No terminal do Expo, leia o QR code com um dispositivo compatível na mesma rede ou pressione `a` para abrir um emulador Android configurado.
+No terminal do Expo, leia o QR code pelo Expo Go no celular conectado à mesma rede. Confirme que o Expo Go suporta SDK 57.
 
 ```powershell
 npm run android
@@ -76,6 +76,18 @@ Não versione `.env`, credenciais, bancos locais, `node_modules`, `.expo` ou bui
 
 Referências: [Expo e TypeScript](https://docs.expo.dev/guides/typescript/) e [instalação do React Navigation](https://reactnavigation.org/docs/getting-started/).
 
+## Compatibilidade com Expo Go
+
+A base foi migrada do SDK 58 para o SDK 57 para corresponder ao Expo Go disponível no Samsung Galaxy A54. As quatro telas e a navegação inferior foram preservadas. Não há expo-dev-client nem pastas nativas geradas.
+
+Execute `npx expo start --go --clear`: `--go` seleciona o Expo Go e `--clear` limpa o cache do Metro. Valide as quatro abas no aparelho; as verificações automáticas não substituem esse teste.
+
+Antes de iniciar, confirme `node -v` na versão 24 LTS. Se utilizar um Node portátil, execute o CLI do npm/npx explicitamente com esse executável para evitar que o launcher do Windows utilize o Node global.
+
+Em 21/10/2026, o usuário confirmou o teste físico no Samsung Galaxy A54 com Expo Go SDK 57: os seis itens do checklist passaram, incluindo a abertura do aplicativo e a navegação entre Início, Receitas, Despesas e Movimentações.
+
 ## Pendências conhecidas da base
 
 Na preparação inicial, `npm audit` reportou 15 alertas altos na cadeia Expo/Metro, relacionados a `braces` e `node-forge`. A tentativa de correção sem `--force` manteve esses alertas; a sugestão automática restante rebaixa o Expo para uma versão incompatível com esta base. Acompanhar as atualizações do ecossistema e reavaliar antes de publicar uma versão de produção. Não executar `npm audit fix --force` sem avaliar a compatibilidade.
+
+A instalação após a migração para SDK 57 também reportou 15 alertas altos. Essa contagem permanece como pendência de auditoria; não foi aplicada correção forçada nesta migração.
