@@ -4,7 +4,7 @@ Aplicativo de controle financeiro pessoal desenvolvido em React Native com Expo 
 
 ## Objetivo e equipe
 
-Projeto acadêmico de Wesley, Marcus, Eliezer e Davi. A aplicação mobile preserva a navegação financeira e as telas compartilhadas pelos integrantes do projeto. Esta branch adiciona autenticação JWT, navegação protegida e persistência segura da sessão, sem alterar o backend ou as quatro telas financeiras.
+Projeto acadêmico de Wesley, Marcus, Eliezer e Davi. A aplicação mobile utiliza autenticação JWT, navegação protegida e persistência segura da sessão. A branch de Dashboard integra a base da equipe com cadastro de usuários e resumo financeiro, preservando as abas Receitas, Despesas e Movimentações.
 
 ## Pré-requisitos
 
@@ -83,7 +83,13 @@ src/
   types/            # contratos de autenticação e navegação
 ```
 
-O `AuthGate` impede o acesso à navegação financeira sem uma sessão válida. O [LogoutButton](./src/components/LogoutButton.tsx) chama o logout do contexto sem modificar as telas financeiras.
+O `AuthGate` impede o acesso à navegação financeira sem uma sessão válida. O [LogoutButton](./src/components/LogoutButton.tsx) chama o logout do contexto compartilhado. `LoginScreen` permite abrir o cadastro em `RegisterScreen` no modo API; após criar a conta, retorna ao login com o e-mail preenchido.
+
+## Dashboard e cadastro
+
+A tela Início exibe saldo, receitas, despesas e as cinco movimentações mais recentes com `GET /api/transacoes` e o JWT real. Os totais abrangem todo o período cadastrado. No modo mock, a tela informa que é necessária uma conta real e não consulta dados financeiros. A URL passa pela mesma validação de rede da base da equipe.
+
+O cadastro usa `POST /api/usuarios` pelo cliente HTTP compartilhado, apenas no modo API. Consulte [autenticação e cadastro](docs/autenticacao-mobile.md) e [Dashboard](docs/dashboard-mobile.md). Execute `npm test` e `npm run typecheck` antes do PR. Sessões da implementação local anterior não são migradas; entre novamente após atualizar.
 
 ## Git Flow e colaboração
 

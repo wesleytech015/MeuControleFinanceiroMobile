@@ -15,6 +15,7 @@ import { useAuth } from '../context/AuthContext';
 import { MockCredentialsError } from '../services/authService';
 import { ApiError } from '../services/httpClient';
 import { colors } from '../theme';
+import { RegisterScreen } from './RegisterScreen';
 
 function loginErrorMessage(error: unknown): string {
   if (error instanceof MockCredentialsError) return error.message;
@@ -36,6 +37,8 @@ export function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [showRegistration, setShowRegistration] = useState(false);
+  const [registrationNotice, setRegistrationNotice] = useState<string | null>(null);
 
   async function handleLogin() {
     const normalizedEmail = email.trim();
@@ -58,6 +61,18 @@ export function LoginScreen() {
   const contextError = error?.operation === 'login' ? error.message : null;
   const visibleError = validationError ?? contextError;
 
+  if (showRegistration && authMode === 'api') {
+    return <RegisterScreen onReturnToLogin={(registeredEmail) => {
+      setShowRegistration(false);
+      setValidationError(null);
+      if (registeredEmail) {
+        setEmail(registeredEmail);
+        setSenha('');
+        setRegistrationNotice('Cadastro concluído. Entre com seu e-mail e senha.');
+      }
+    }} />;
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -70,6 +85,7 @@ export function LoginScreen() {
         <View style={styles.card}>
           <Text accessibilityRole="header" style={styles.title}>Meu Controle Financeiro</Text>
           <Text style={styles.subtitle}>Entre para acessar suas finanças</Text>
+          {registrationNotice ? <Text accessibilityRole="alert" style={styles.passwordButtonText}>{registrationNotice}</Text> : null}
           {authMode === 'mock' ? (
             <Text accessibilityRole="text" style={styles.demoBadge}>Modo demonstração</Text>
           ) : null}
@@ -145,6 +161,14 @@ export function LoginScreen() {
               <Text style={styles.buttonText}>Entrar</Text>
             )}
           </Pressable>
+          {authMode === 'api' ? <Pressable
+            accessibilityRole="button"
+            disabled={isSubmitting}
+            onPress={() => { setRegistrationNotice(null); setShowRegistration(true); }}
+            style={styles.passwordButton}
+          >
+            <Text style={styles.passwordButtonText}>Ainda não tem conta? Cadastre-se</Text>
+          </Pressable> : null}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

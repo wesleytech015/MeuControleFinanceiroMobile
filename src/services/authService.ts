@@ -72,3 +72,17 @@ export async function login(credentials: AuthCredentials): Promise<Authenticated
     usuario: response.data.usuario,
   };
 }
+
+export async function register(nome: string, email: string, senha: string): Promise<void> {
+  if (getAuthMode() !== 'api') {
+    throw new Error('O cadastro exige o modo API e uma conexão com o backend.');
+  }
+  const response = await httpRequest<unknown>('/usuarios', {
+    method: 'POST',
+    body: { nome: nome.trim(), email: email.trim(), senha },
+  });
+  if (typeof response.data !== 'object' || response.data === null
+    || !('mensagem' in response.data) || !isNonEmptyString(response.data.mensagem)) {
+    throw new ApiError('A API retornou uma resposta de cadastro inesperada.', 'invalid_response', response.status);
+  }
+}

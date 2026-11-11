@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from './sessionStore';
 import type { AuthenticatedSession } from '../types/auth';
 
 export const SESSION_STORAGE_KEY = 'MeuControleFinanceiroMobile.session.v1';
@@ -28,7 +28,6 @@ function isAuthenticatedSession(value: unknown): value is AuthenticatedSession {
   if (typeof usuario !== 'object' || usuario === null) return false;
 
   if (candidate.version !== 1
-    || Number.isNaN(usuario.id)
     || !Number.isInteger(usuario.id)
     || !isNonEmptyString(usuario.nome)
     || !isNonEmptyString(usuario.email)) {
