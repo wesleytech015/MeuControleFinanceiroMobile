@@ -42,6 +42,16 @@ export function RegisterScreen({ onReturnToLogin }: { onReturnToLogin: (register
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={[styles.content, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }]} keyboardShouldPersistTaps="handled">
         <View style={styles.card}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Voltar para o login"
+            disabled={isSubmitting}
+            onPress={() => onReturnToLogin()}
+            style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
+          >
+            <Text style={styles.backLink}>← Voltar para o login</Text>
+          </Pressable>
+
           <Text accessibilityRole="header" style={styles.title}>Meu Controle</Text>
           <Text style={styles.subtitle}>Crie sua conta para começar.</Text>
 
@@ -121,6 +131,9 @@ const styles = StyleSheet.create({
   input: { minHeight: 50, borderWidth: 1, borderColor: colors.border, borderRadius: 10, paddingHorizontal: 14, color: colors.text, fontSize: 16, backgroundColor: colors.surface },
   primaryButton: { minHeight: 50, alignItems: 'center', justifyContent: 'center', borderRadius: 10, backgroundColor: colors.primary, marginTop: 2 },
   disabled: { opacity: 0.65 },
+  backButton: { minHeight: 44, alignSelf: 'flex-start', justifyContent: 'center', paddingHorizontal: 4 },
+  backLink: { color: colors.primary, fontSize: 15, fontWeight: '700' },
+  pressed: { opacity: 0.75 },
   primaryText: { color: colors.surface, fontSize: 16, fontWeight: '700' },
   error: { color: '#B42318', fontSize: 14, lineHeight: 20 },
   switchRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 6 },
