@@ -38,6 +38,28 @@ npx expo-doctor
 
 `android` e `ios` iniciam o servidor e tentam abrir o app; não geram um build nativo. Para conferir a compilação JavaScript Android sem emulador: `npx expo export --platform android`. Isso não substitui um teste no dispositivo.
 
+## Geração de APK Android
+
+O segundo APK (`android.versionCode: 2`, versão `0.1.0`) inclui o ícone personalizado de progresso financeiro, com camadas adaptativas e monocromática para o Android. Também inclui a correção de contraste nos campos de cadastro.
+
+Use Node.js 24 LTS, npm, uma conta Expo com acesso ao projeto EAS da equipe e um dispositivo Android. Execute os comandos na raiz do projeto. Se precisar instalar o EAS CLI, execute `npm install -g eas-cli`.
+
+```powershell
+eas login
+eas init
+eas build --platform android --profile preview
+```
+
+Execute `eas init` no primeiro vínculo com o EAS. Selecione o projeto existente da equipe ou crie um sob a conta responsável, caso ainda não exista. O comando registra o `extra.eas.projectId` no arquivo de configuração do Expo. Os perfis já estão em `eas.json`, então não é preciso executar `eas build:configure` para gerá-los.
+
+No primeiro build, selecione a chave de assinatura Android já usada pela equipe para esse identificador. Se for a primeira distribuição do aplicativo e ainda não houver chave, o EAS pode gerar e armazenar uma. Mantenha o acesso à chave com a equipe e guarde uma cópia segura fora do repositório.
+
+Quando o build terminar, abra o link do EAS no Android, baixe o APK e abra o arquivo. Se o Android solicitar, permita que o navegador ou gerenciador de arquivos instale apps dessa origem. O APK abre diretamente pelo ícone do aplicativo, sem Expo Go.
+
+Para instalar uma atualização por cima da versão anterior, mantenha o identificador `com.meucontrolefinanceiro.mobile` e a mesma chave de assinatura. Aumente `android.versionCode` em `app.json` antes de gerar cada versão distribuída e abra o novo APK no aparelho para atualizar.
+
+O perfil `preview` aponta para a API do Render em `https://meucontrolefinanceiroweb.onrender.com/api` e usa autenticação real. Cadastros e operações de escrita podem gravar dados no banco PostgreSQL de produção no Supabase. Use dados de teste autorizados. O perfil `production` gera um AAB. Antes de usá-lo, configure a URL HTTPS da API e o modo `api` no ambiente de produção do EAS.
+
 ## Configuração local
 
 Use `.env.example` como referência e mantenha as configurações locais em `.env`, que é ignorado pelo Git.
