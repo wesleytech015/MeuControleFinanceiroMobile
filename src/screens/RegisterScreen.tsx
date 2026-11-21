@@ -61,6 +61,7 @@ export function RegisterScreen({ onReturnToLogin }: { onReturnToLogin: (register
             autoComplete="name"
             onChangeText={(value) => updateField('nome', value)}
             placeholder="Nome completo"
+            placeholderTextColor={colors.muted}
             returnKeyType="next"
             style={styles.input}
             value={fields.nome}
@@ -73,6 +74,7 @@ export function RegisterScreen({ onReturnToLogin }: { onReturnToLogin: (register
             keyboardType="email-address"
             onChangeText={(value) => updateField('email', value)}
             placeholder="E-mail"
+            placeholderTextColor={colors.muted}
             returnKeyType="next"
             style={styles.input}
             textContentType="emailAddress"
@@ -84,6 +86,7 @@ export function RegisterScreen({ onReturnToLogin }: { onReturnToLogin: (register
             autoComplete="new-password"
             onChangeText={(value) => updateField('senha', value)}
             placeholder="Senha"
+            placeholderTextColor={colors.muted}
             returnKeyType="next"
             secureTextEntry
             style={styles.input}
@@ -97,6 +100,7 @@ export function RegisterScreen({ onReturnToLogin }: { onReturnToLogin: (register
             onChangeText={(value) => updateField('confirmarSenha', value)}
             onSubmitEditing={() => void submit()}
             placeholder="Confirme sua senha"
+            placeholderTextColor={colors.muted}
             returnKeyType="go"
             secureTextEntry
             style={styles.input}

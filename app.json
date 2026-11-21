@@ -10,8 +10,10 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.meucontrolefinanceiro.mobile",
+      "versionCode": 2,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0758C7",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -22,7 +24,14 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-status-bar"
-    ]
+      "expo-status-bar",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c9adc886-7e72-457a-8438-0489678e785e"
+      }
+    },
+    "owner": "wesleysouza015"
   }
 }
