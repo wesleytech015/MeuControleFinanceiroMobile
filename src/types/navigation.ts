@@ -3,4 +3,5 @@ export type RootTabParamList = {
   Receitas: undefined;
   Despesas: undefined;
   Movimentacoes: undefined;
+  WhatsApp: undefined;
 };

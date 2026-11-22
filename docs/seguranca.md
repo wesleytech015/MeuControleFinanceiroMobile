@@ -1,5 +1,9 @@
 # Segurança e manutenção — MeuControleFinanceiroMobile
 
+## Vínculo de WhatsApp em desenvolvimento
+
+O mobile usa o JWT da sessão real nas rotas de vínculo da branch de WhatsApp do backend; não envia ID de usuário nem armazena o código gerado. O código é apresentado temporariamente para envio manual pelo telefone informado e a desvinculação exige confirmação. O backend com essas rotas ainda precisa ser validado e publicado separadamente: os testes do mobile simulam HTTP e não comprovam entrega pela Meta ou gravação em banco. Não inclua tokens da Meta, segredo do webhook ou credenciais de banco em `EXPO_PUBLIC_*`.
+
 ## Atualização de 03/11/2026
 
 As dependências foram atualizadas dentro do SDK Expo 58. Foram mantidas as dependências web já adicionadas pelo integrante do projeto. A instalação resultou em Expo 58.0.23, React Native 0.88.1, safe-area-context ~5.11.1 e screens ~4.30.1, com package.json e lockfile sincronizados.
