@@ -42,6 +42,10 @@ export function TransactionsManager({ tipo }: { tipo?: TransactionKind }) {
   const [revision, setRevision] = useState(0);
   const [month, setMonth] = useState('');
   const [category, setCategory] = useState('');
+  
+  const [kindFilter, setKindFilter] = useState<'todas' | TransactionKind>('todas');
+  const [searchQuery, setSearchQuery] = useState('');
+
   const [editor, setEditor] = useState<Editor | null>(null);
   const [deleting, setDeleting] = useState<Transaction | null>(null);
   const [busy, setBusy] = useState(false);
@@ -75,10 +79,19 @@ export function TransactionsManager({ tipo }: { tipo?: TransactionKind }) {
     return () => controller.abort();
   }, [session, accessAllowed, revision]));
 
+  const effectiveKind = tipo ?? (kindFilter === 'todas' ? undefined : kindFilter);
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
   let visible: Transaction[] = [];
   let filterError: string | null = null;
-  try { visible = filterTransactions(items, month, category, tipo); }
-  catch (error) { filterError = messageFor(error); }
+  try {
+    visible = filterTransactions(items, month, category, effectiveKind).filter(item => {
+      if (!normalizedQuery) return true;
+      const hay = `${item.descricao} ${item.categoria ?? ''} ${item.forma_pagamento ?? ''}`.toLowerCase();
+      return hay.includes(normalizedQuery);
+    });
+  } catch (error) { filterError = messageFor(error); }
+  
   const incomeCents = visible.filter(item => item.tipo === 'receita').reduce((sum, item) => sum + Math.round(item.valor * 100), 0);
   const expenseCents = visible.filter(item => item.tipo === 'despesa').reduce((sum, item) => sum + Math.round(item.valor * 100), 0);
 
@@ -179,17 +192,35 @@ export function TransactionsManager({ tipo }: { tipo?: TransactionKind }) {
               placeholder="Ex.: 11/2026" style={styles.input} />
             <Text style={styles.label}>Buscar categoria</Text>
             <TextInput accessibilityLabel="Buscar categoria" value={category} onChangeText={setCategory} style={styles.input} placeholder="Todas as categorias" />
-            <Button title="Limpar filtros" secondary onPress={() => { setMonth(''); setCategory(''); }} />
+            {!tipo && <>
+              <Text style={styles.label}>Tipo de lançamento</Text>
+              <View style={styles.row}>
+                <Button title="Todas" secondary={kindFilter !== 'todas'} onPress={() => setKindFilter('todas')} />
+                <Button title="Receitas" secondary={kindFilter !== 'receita'} onPress={() => setKindFilter('receita')} />
+                <Button title="Despesas" secondary={kindFilter !== 'despesa'} onPress={() => setKindFilter('despesa')} />
+              </View>
+            </>}
+            <Text style={styles.label}>Buscar no histórico</Text>
+            <TextInput accessibilityLabel="Buscar descrição, categoria ou pagamento" value={searchQuery}
+              onChangeText={setSearchQuery} placeholder="Ex.: mercado, Pix, salário..." style={styles.input} />
+
+            <Button title="Limpar filtros" secondary onPress={() => { setMonth(''); setCategory(''); setKindFilter('todas'); setSearchQuery(''); }} />
             {filterError && <Text accessibilityRole="alert" style={styles.error}>{filterError}</Text>}
           </View>
           {loading && <ActivityIndicator accessibilityLabel="Carregando movimentações" color={colors.primary} />}
           {loadError && <Text accessibilityRole="alert" style={styles.error}>{loadError} Use Atualizar lista para tentar novamente.</Text>}
           {!loading && !loadError && !filterError && <View style={styles.card}>
-            <Text style={styles.heading}>{visible.length} lançamento(s) no filtro</Text>
+            <Text style={styles.heading}>
+              {visible.length === items.length
+                ? `${visible.length} lançamento(s) no histórico`
+                : `${visible.length} de ${items.length} lançamento(s) exibido(s)`}
+            </Text>
             {tipo !== 'despesa' && <Text style={styles.success}>Receitas: {formatMoney(incomeCents / 100)}</Text>}
             {tipo !== 'receita' && <Text style={styles.error}>Despesas: {formatMoney(expenseCents / 100)}</Text>}
-            {!tipo && <Text style={styles.label}>Saldo do filtro: {formatMoney((incomeCents - expenseCents) / 100)}</Text>}
+            {!tipo && <Text style={styles.label}>Saldo do período/filtro: {formatMoney((incomeCents - expenseCents) / 100)}</Text>}
             <Text style={styles.hint}>O resumo da aba Início continua abrangendo todo o período.</Text>
+
+
           </View>}
         </>}
       </View>}
